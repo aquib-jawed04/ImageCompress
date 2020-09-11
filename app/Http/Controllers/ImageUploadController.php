@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\ImageUpload;
 use Image;
+use ImageOptimizer;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Illuminate\Support\Facades\Validator;
 
 class ImageUploadController extends Controller
@@ -73,6 +75,8 @@ class ImageUploadController extends Controller
             // }
             if($request->hasFile('image')) {
                 //get filename with extension
+                $image = $request->file('image');
+
                 $filenamewithextension = $request->file('image')->getClientOriginalName();
          
                 //get filename without extension
@@ -125,17 +129,6 @@ class ImageUploadController extends Controller
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -243,6 +236,70 @@ class ImageUploadController extends Controller
 
 
     }
+
+
+
+
+    public function spatie(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+            'caption' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+
+        ]);
+
+        if(!$validator->fails()){      
+            $img = new ImageUpload;
+
+
+            if($request->hasFile('image')) {
+                //get filename with extension
+                $filenamewithextension = $request->file('image')->getClientOriginalName();
+         
+                //get filename without extension
+                $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
+         
+                //get file extension
+                $extension = $request->file('image')->getClientOriginalExtension();
+         
+                //filename to store
+                $filenametostore = $filename.'_'.'spatie'.'.'.$extension;
+         
+                //Upload File
+                $request->file('image')->storeAs('public/image', $filenametostore);
+         
+                //Compress Image Code Here
+         
+                $filepath = public_path('storage/image/'.$filenametostore);
+
+
+                
+                ImageOptimizer::optimize($filepath);
+
+                // return redirect()->back()->with('success', "Image uploaded successfully.");
+            }
+
+            $img->image = $filenametostore;
+            // $img->image = $fileNameToStore;
+            $img->caption = $request['caption'];
+            $img->save();
+            return redirect()->back()->with('success', 'Image Uploaded');
+        }
+        else{
+            return redirect()->back()->withInputs()->with('error', $validator);
+        }
+
+
+    }
+
+
+
+
+
+
+
+
 
     /**
      * Display the specified resource.

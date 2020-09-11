@@ -21,4 +21,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/imageUpload', 'ImageUploadController@index')->name('image');
 Route::post('imageUpload', 'ImageUploadController@store')->name('image.upload');
 Route::post('smushUpload', 'ImageUploadController@smush')->name('image.upload-smush');
-Route::post('spatieUpload', 'ImageUploadController@spatie')->name('image.upload-spatie');
+
+Route::middleware('optimizeImages')->group(function () {
+    // all images will be optimized automatically
+    Route::post('spatieUpload', 'ImageUploadController@spatie')->name('image.upload-spatie');
+});
+
