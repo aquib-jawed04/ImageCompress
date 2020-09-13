@@ -301,6 +301,74 @@ class ImageUploadController extends Controller
 
 
 
+
+    public function cropIndex(){
+
+        return view('UploadImage.cropper');
+
+    }
+
+
+    public function upload(Request $request){
+
+        if($request->ajax())
+        {
+
+
+            if($request->hasFile('image')) {
+                //get filename with extension
+                $image = $request->file('image');
+
+                
+
+                $filenamewithextension = $request->file('image')->getClientOriginalName();
+         
+                //get filename without extension
+                $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
+         
+                //get file extension
+                $extension = $request->file('image')->getClientOriginalExtension();
+         
+                //filename to store
+                $filenametostore = $filename.'_'.time().'.'.$extension;
+         
+                //Upload File
+                $request->file('image')->storeAs('public/image', $filenametostore);
+         
+                $image_array_1 = explode(";", $image);
+                $image_array_2 = explode(",", $image_array_1[1]);
+                $data = base64_decode($image_array_2[1]);
+         
+                // $filepath = public_path('storage/image/'.$filenametostore);
+                return response()->json(['path' => '/public/image/' . $filenametostore]);
+            }
+
+
+
+
+
+
+
+        //  $image_data = $request->image;
+        //  $image_array_1 = explode(";", $image_data);
+        //  $image_array_2 = explode(",", $image_array_1[1]);
+        //  $data = base64_decode($image_array_2[1]);
+        //  $image_name = time() . '.png';
+        //  $upload_path = public_path('crop_image/' . $image_name);
+        //  storeAs($upload_path, $data);
+        //  return response()->json(['path' => '/crop_image/' . $image_name]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     /**
      * Display the specified resource.
      *

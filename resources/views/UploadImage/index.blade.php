@@ -1,170 +1,98 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+  <title>Laravel PHP - Cropping and uploading an image with Croppie plugin using jQuery Ajax </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
 
-@section('content')
-    
-@if ($message = Session::get('success'))
-<div class="alert alert-success alert-block">
-    <button type="button" class="close" data-dismiss="alert">×</button> 
-        <strong>{{ $message }}</strong>
-</div>
-@endif
-@if ($message = Session::get('error'))
-<div class="alert alert-danger alert-block">
-    <button type="button" class="close" data-dismiss="alert">×</button> 
-        <strong>{{ $message }}</strong>
-</div>
-@endif
+<body>
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">Laravel PHP - Cropping and uploading an image with Croppie plugin using jQuery Ajax</div>
+    <div class="panel-body">
 
-
-
-
-
-    <div class="container">
-        <div class="jumbotron mb-4  ">
-            <h1 class="display-4"><strong>ImageUpload Using Intervention</strong></h1>
-            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus doloribus repudiandae quis. In, perspiciatis nesciunt quae amet beatae consectetur harum enim pariatur dicta veniam optio odit vitae, aliquam, totam accusantium.</p>
+      <div class="row">
+        <div class="col-md-4 text-center">
+        <div id="upload-demo"></div>
         </div>
-    
-        
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mt-4 mb-4">
-                            <h2><b>Upload Image using TinyPng</b></h2>
-                        </div>
-                        <form action="{{route('image.upload')}}" method="POST" enctype="multipart/form-data">
-                
-                            @csrf
-            
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" name="image"  id="image" value="{{ old('image') }}" >
-                                    @error('image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="text" class="form-control @error('caption') is-invalid @enderror" name="caption"  id="caption" value="{{ old('caption') }}" >
-                                    @error('caption')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
+        <div class="col-md-4" style="padding:5%;">
+        <strong>Select image to crop:</strong>
+        <input type="file" id="image">
 
-                            <div class="form-row">
-                                <div class="col-md">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </div>
-            
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mt-4 mb-4">
-                            <h2><b>Upload Image using Smush</b></h2>
-                        </div>
-                        <form action="{{route('image.upload-smush')}}" method="POST" enctype="multipart/form-data">
-                
-                            @csrf
-            
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" name="image"  id="image" value="{{ old('image') }}" >
-                                    @error('image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="text" class="form-control @error('caption') is-invalid @enderror" name="caption"  id="caption" value="{{ old('caption') }}" >
-                                    @error('caption')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="col-md">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </div>
-            
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mt-4 mb-4">
-                            <h2><b>Upload Image using Spatie</b></h2>
-                        </div>
-                        <form action="{{route('image.upload-spatie')}}" method="POST" enctype="multipart/form-data">
-                
-                            @csrf
-            
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" name="image"  id="image" value="{{ old('image') }}" >
-                                    @error('image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-            
-                            <div class="form-row ">
-                                <div class="form-group col-md-12">
-                                    <input type="text" class="form-control @error('caption') is-invalid @enderror" name="caption"  id="caption" value="{{ old('caption') }}" >
-                                    @error('caption')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="col-md">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </div>
-            
-                        </form>
-
-                    </div>
-                </div>
-            </div>
+        <button class="btn btn-primary btn-block upload-image" style="margin-top:2%">Upload Image</button>
         </div>
+
+        <div class="col-md-4">
+        <div id="preview-crop-image" style="background:#9d9d9d;width:300px;padding:50px 50px;height:300px;"></div>
+        </div>
+      </div>
 
     </div>
+  </div>
+</div>
 
 
+<script type="text/javascript">
 
-@endsection
+$.ajaxSetup({
+headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+}
+});
+
+
+var resize = $('#upload-demo').croppie({
+    enableExif: true,
+    enableOrientation: true,    
+    viewport: { // Default { width: 100, height: 100, type: 'square' } 
+        width: 200,
+        height: 200,
+        type: 'circle' //square
+    },
+    boundary: {
+        width: 300,
+        height: 300
+    }
+});
+
+
+$('#image').on('change', function () { 
+  var reader = new FileReader();
+    reader.onload = function (e) {
+      resize.croppie('bind',{
+        url: e.target.result
+      }).then(function(){
+        console.log('jQuery bind complete');
+      });
+    }
+    reader.readAsDataURL(this.files[0]);
+});
+
+
+$('.upload-image').on('click', function (ev) {
+  resize.croppie('result', {
+    type: 'canvas',
+    size: 'viewport'
+  }).then(function (img) {
+    $.ajax({
+      url: "{{route('croppie.upload-image')}}",
+      type: "POST",
+      data: {"image":img},
+      success: function (data) {
+        html = '<img src="' + img + '" />';
+        $("#preview-crop-image").html(html);
+      }
+    });
+  });
+});
+
+
+</script>
+
+
+</body>
+</html>

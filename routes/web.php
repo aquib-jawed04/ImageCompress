@@ -27,3 +27,10 @@ Route::middleware('optimizeImages')->group(function () {
     Route::post('spatieUpload', 'ImageUploadController@spatie')->name('image.upload-spatie');
 });
 
+
+Route::get('image_crop', 'ImageUploadController@cropIndex');
+Route::post('image_crop/upload', 'ImageUploadController@upload')->name('image_crop.upload');;
+// Route::get('image_crop','ImageCropController@index');
+
+// Route::post('image_crop/upload', 'ImageCropController@upload')
+
